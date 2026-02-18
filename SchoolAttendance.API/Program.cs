@@ -1,10 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance.API.Data;
+using System.Text.Json.Serialization; 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,8 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+// app.UseHttpsRedirection(); 
 app.UseAuthorization();
 app.MapControllers();
 

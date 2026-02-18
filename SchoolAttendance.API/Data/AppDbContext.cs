@@ -59,8 +59,8 @@ public class AppDbContext : DbContext
                 LastName = "Yılmaz",
                 Email = "ahmet.yilmaz@emu.edu.tr",
                 Department = "Computer Engineering",
-                QRCode = "ahmet-qr-fixed-code", // Guid.NewGuid() yerine sabit string
-                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) // DateTime.UtcNow yerine sabit tarih
+                QRCode = "ahmet-qr-fixed-code", 
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) 
             },
             new Student
             {
@@ -70,7 +70,7 @@ public class AppDbContext : DbContext
                 LastName = "Demir",
                 Email = "ayse.demir@emu.edu.tr",
                 Department = "Computer Engineering",
-                QRCode = "ayse-qr-fixed-code", // Sabit string
+                QRCode = "ayse-qr-fixed-code", 
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
