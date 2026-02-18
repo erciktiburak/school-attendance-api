@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SchoolAttendance.API/SchoolAttendance.API.csproj" />
+  <Project Path="SchoolAttendance.Tests/SchoolAttendance.Tests.csproj" />
+</Solution>
