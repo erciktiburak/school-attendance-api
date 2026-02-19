@@ -113,4 +113,38 @@ public class StudentController : ControllerBase
     {
         return _context.Students.Any(e => e.Id == id);
     }
+
+    // GET: api/student/5/qrcode
+    [HttpGet("{id}/qrcode")]
+    public async Task<IActionResult> GetStudentQRCode(int id, [FromServices] IQRCodeService qrCodeService)
+    {
+        var student = await _context.Students.FindAsync(id);
+        if (student == null)
+        {
+            return NotFound();
+        }
+
+        var qrBytes = qrCodeService.GenerateQRCode(student.QRCode);
+        return File(qrBytes, "image/png");
+    }
+
+    // GET: api/student/5/qrcode/base64
+    [HttpGet("{id}/qrcode/base64")]
+    public async Task<ActionResult> GetStudentQRCodeBase64(int id, [FromServices] IQRCodeService qrCodeService)
+    {
+        var student = await _context.Students.FindAsync(id);
+        if (student == null)
+        {
+            return NotFound();
+        }
+
+        var qrBase64 = qrCodeService.GenerateQRCodeBase64(student.QRCode);
+        
+        return Ok(new
+        {
+            studentId = student.Id,
+            studentName = $"{student.FirstName} {student.LastName}",
+            qrCodeBase64 = $"data:image/png;base64,{qrBase64}"
+        });
+    }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance.API.Data;
 using System.Text.Json.Serialization; 
+using SchoolAttendance.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,9 @@ builder.Services.AddSwaggerGen();
 // Database configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// QR Code Service Configuration
+builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 
 // CORS
 builder.Services.AddCors(options =>
@@ -40,8 +44,11 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection(); 
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+
 
 // Auto-migrate database
 using (var scope = app.Services.CreateScope())
