@@ -13,6 +13,21 @@ ASP.NET Core Web API for school attendance tracking with QR code support.
 - Swagger API documentation
 - Docker support
 
+## Key Features Implemented
+- RESTful API design with proper HTTP verbs
+- Entity Framework Core with code-first migrations
+- Repository pattern and dependency injection
+- Comprehensive Swagger/OpenAPI documentation
+- Unit testing with xUnit and in-memory database
+- Docker containerization for easy deployment
+- CORS configuration for frontend integration
+
+## Statistics & Analytics
+- Real-time dashboard metrics
+- Weekly/monthly attendance reports
+- Individual student performance tracking
+- Department-wise analytics
+
 ## Quick Start
 
 ### Prerequisites
@@ -81,7 +96,7 @@ SQLite database is automatically created on first run with seed data:
 - Corporate office check-ins
 - Event attendance tracking
 
-## 📄 License
+## License
 
 MIT License
 
