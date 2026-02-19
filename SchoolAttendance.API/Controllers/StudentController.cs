@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance.API.Data;
 using SchoolAttendance.API.Models;
+using SchoolAttendance.API.Services;
 
 namespace SchoolAttendance.API.Controllers;
 
