@@ -1,105 +1,218 @@
-# School Attendance Tracker API
+# School Attendance Tracker - Full Stack
 
-ASP.NET Core Web API for school attendance tracking with QR code support.
+A comprehensive school attendance management system with QR code functionality, built with ASP.NET Core and Vue.js.
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
+![Vue.js](https://img.shields.io/badge/Vue.js-3.0-green.svg)
 
 ## Features
 
-- Student management with unique QR codes
-- Check-in/Check-out tracking
-- Real-time attendance statistics
-- Dashboard analytics (daily, weekly, monthly)
-- Department-wise reports
-- QR code generation for students
-- Swagger API documentation
-- Docker support
+### 🔐 Admin Panel
+- **Real-time Dashboard** - Live statistics with interactive charts
+- **Student Management** - Full CRUD operations with QR code generation
+- **Attendance Logs** - Comprehensive attendance tracking with filters
+- **Advanced Reports** - Weekly, monthly, department-wise, and student-level analytics
+- **CSV Export** - Export attendance data for external analysis
 
-## Key Features Implemented
-- RESTful API design with proper HTTP verbs
-- Entity Framework Core with code-first migrations
-- Repository pattern and dependency injection
-- Comprehensive Swagger/OpenAPI documentation
-- Unit testing with xUnit and in-memory database
-- Docker containerization for easy deployment
+### Student Portal
+- **QR Code Scanner** - Quick check-in/check-out functionality
+- **Personal Dashboard** - View attendance stats and personal QR code
+- **Attendance History** - Complete attendance record with duration tracking
+- **Mobile-Friendly** - Responsive design optimized for all devices
+
+### 🔧 Technical Features
+- RESTful API with Swagger documentation
+- QR code generation and scanning
+- Real-time statistics and analytics
+- SQLite database with EF Core
+- Unit testing with xUnit
+- Docker containerization
 - CORS configuration for frontend integration
 
-## Statistics & Analytics
-- Real-time dashboard metrics
-- Weekly/monthly attendance reports
-- Individual student performance tracking
-- Department-wise analytics
+## 🛠️ Tech Stack
+
+### Backend
+- **Framework:** ASP.NET Core 8.0
+- **ORM:** Entity Framework Core
+- **Database:** SQLite
+- **QR Generation:** QRCoder
+- **Testing:** xUnit
+- **Documentation:** Swagger/OpenAPI
+
+### Frontend
+- **Framework:** Vue.js 3 (Composition API)
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **Charts:** Chart.js + vue-chartjs
+- **Icons:** Heroicons
+- **HTTP Client:** Axios
+- **Router:** Vue Router 4
 
 ## Quick Start
 
 ### Prerequisites
 - .NET 8.0 SDK
+- Node.js 18+ and npm
 - Docker (optional)
 
-### Run Locally
+### Backend Setup
 ```bash
+# Navigate to API directory
 cd SchoolAttendance.API
+
+# Restore dependencies
 dotnet restore
+
+# Run migrations
+dotnet ef database update
+
+# Run the API
 dotnet run
 ```
 
-Visit: `https://localhost:7xxx/swagger`
+API will be available at: `https://localhost:5000` (or check terminal for port)
 
-### Run with Docker
+### Frontend Setup
 ```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+Frontend will be available at: `http://localhost:5174`
+
+### Docker Setup
+```bash
+# Build and run with Docker Compose
 docker-compose up -d
 ```
 
-Visit: `http://localhost:5000/swagger`
+- API: `http://localhost:5000`
+- Frontend: Configure in docker-compose.yml
 
 ## API Endpoints
 
 ### Students
-- `GET /api/student` - Get all students
-- `GET /api/student/{id}` - Get student by ID
-- `GET /api/student/qr/{qrCode}` - Get student by QR code
-- `GET /api/student/{id}/qrcode` - Get student QR code image
-- `POST /api/student` - Create new student
-- `PUT /api/student/{id}` - Update student
-- `DELETE /api/student/{id}` - Delete student
+```
+GET    /api/student              - Get all students
+GET    /api/student/{id}         - Get student by ID
+GET    /api/student/qr/{qrCode}  - Get student by QR code
+GET    /api/student/{id}/qrcode  - Get student QR code image
+POST   /api/student              - Create new student
+PUT    /api/student/{id}         - Update student
+DELETE /api/student/{id}         - Delete student
+```
 
 ### Attendance
-- `POST /api/attendance/checkin` - Check-in student
-- `POST /api/attendance/checkout` - Check-out student
-- `GET /api/attendance/today` - Today's attendance
-- `GET /api/attendance/date/{date}` - Attendance by date
-- `GET /api/attendance/student/{id}` - Student attendance history
+```
+POST   /api/attendance/checkin          - Check-in student
+POST   /api/attendance/checkout         - Check-out student
+GET    /api/attendance/today            - Today's attendance
+GET    /api/attendance/date/{date}      - Attendance by date
+GET    /api/attendance/student/{id}     - Student attendance history
+```
 
 ### Statistics
-- `GET /api/statistics/dashboard` - Dashboard summary
-- `GET /api/statistics/weekly` - Weekly statistics
-- `GET /api/statistics/monthly` - Monthly statistics
-- `GET /api/statistics/student/{id}` - Student statistics
-- `GET /api/statistics/department/{name}` - Department statistics
+```
+GET    /api/statistics/dashboard        - Dashboard summary
+GET    /api/statistics/weekly           - Weekly statistics
+GET    /api/statistics/monthly          - Monthly statistics
+GET    /api/statistics/student/{id}     - Student statistics
+GET    /api/statistics/department/{name} - Department statistics
+```
 
-## Tech Stack
+## Usage
 
-- ASP.NET Core 8.0
-- Entity Framework Core
-- SQLite
-- QRCoder
-- Swagger/OpenAPI
+### For Administrators
 
-## Database
+1. **Access Admin Panel:** Navigate to `/admin`
+2. **View Dashboard:** See real-time attendance statistics and charts
+3. **Manage Students:** Add, edit, or remove students with QR code generation
+4. **Track Attendance:** Monitor check-ins/check-outs in real-time
+5. **Generate Reports:** Analyze attendance patterns with comprehensive reports
+6. **Export Data:** Download attendance records as CSV
 
-SQLite database is automatically created on first run with seed data:
-- 2 sample students
-- 1 sample teacher
+### For Students
+
+1. **Access Student Portal:** Navigate to `/student`
+2. **View QR Code:** Display your unique QR code on the home screen
+3. **Check-in/Check-out:** Use the scanner or enter student number manually
+4. **View History:** Track your attendance record and statistics
+
+## Database Schema
+
+### Students
+- ID, Student Number, First Name, Last Name, Email, Department, QR Code, Created At
+
+### Teachers
+- ID, Employee Number, First Name, Last Name, Email, Department, Created At
+
+### Attendance Records
+- ID, Student ID, Check-in Time, Check-out Time, Location, Status
+
+## Testing
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test /p:CollectCoverage=true
+```
 
 ## Use Cases
 
-- School attendance management
-- University class tracking
-- Corporate office check-ins
-- Event attendance tracking
+- **Schools & Universities** - Student attendance tracking
+- **Corporate Offices** - Employee check-in systems
+- **Events** - Participant attendance management
+- **Gyms & Studios** - Member visit tracking
+
+## Screenshots
+
+### Admin Dashboard
+![Dashboard](docs/dashboard.png)
+
+### Student Portal
+![Student Portal](docs/student-portal.png)
+
+### QR Code Scanner
+![Scanner](docs/scanner.png)
+
+## Future Enhancements
+
+- [ ] Authentication & Authorization (JWT)
+- [ ] Email notifications for absences
+- [ ] Mobile app (React Native)
+- [ ] Facial recognition integration
+- [ ] SMS notifications
+- [ ] Parent portal
+- [ ] Multi-language support
+- [ ] Advanced analytics with AI predictions
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Author
 
-[GitHub](https://github.com/erciktiburak)
+**Burak Ercikti**
+- GitHub: [@erciktiburak](https://github.com/erciktiburak)
+
+## Acknowledgments
+
+- ASP.NET Core Team
+- Vue.js Community
+- Tailwind CSS
+- All contributors and supporters
+
+
+If you find this project helpful, please give it a star!
