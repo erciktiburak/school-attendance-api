@@ -57,6 +57,15 @@ public class StudentController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Student>> CreateStudent(Student student)
     {
+        if (await _context.Students.AnyAsync(s => s.StudentNumber == student.StudentNumber))
+        {
+            return BadRequest(new { message = "A student with this student number already exists." });
+        }
+        if (await _context.Students.AnyAsync(s => s.Email == student.Email))
+        {
+            return BadRequest(new { message = "A student with this email already exists." });
+        }
+
         // Generate unique QR code
         student.QRCode = Guid.NewGuid().ToString();
         student.CreatedAt = DateTime.UtcNow;
@@ -74,6 +83,15 @@ public class StudentController : ControllerBase
         if (id != student.Id)
         {
             return BadRequest();
+        }
+
+        if (await _context.Students.AnyAsync(s => s.StudentNumber == student.StudentNumber && s.Id != id))
+        {
+            return BadRequest(new { message = "A student with this student number already exists." });
+        }
+        if (await _context.Students.AnyAsync(s => s.Email == student.Email && s.Id != id))
+        {
+            return BadRequest(new { message = "A student with this email already exists." });
         }
 
         _context.Entry(student).State = EntityState.Modified;
