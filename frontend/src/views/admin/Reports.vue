@@ -2,12 +2,12 @@
   <div>
     <!-- Header -->
     <div class="mb-6">
-      <h2 class="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
-      <p class="text-gray-600">Comprehensive attendance analytics and insights</p>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Reports & Analytics</h2>
+      <p class="text-gray-600 dark:text-gray-400">Comprehensive attendance analytics and insights</p>
     </div>
 
     <!-- Report Type Selector -->
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
       <div class="flex gap-4">
         <button
           v-for="type in reportTypes"
@@ -17,7 +17,7 @@
             'flex-1 px-4 py-3 rounded-lg font-medium transition-colors',
             selectedReportType === type.value
               ? 'bg-indigo-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
           ]"
         >
           {{ type.label }}
@@ -29,29 +29,29 @@
     <div v-if="selectedReportType === 'weekly'">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Weekly Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold mb-4">Weekly Attendance Trend</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold mb-4 dark:text-white">Weekly Attendance Trend</h3>
           <Line v-if="weeklyChartData" :data="weeklyChartData" :options="lineChartOptions" />
         </div>
 
         <!-- Weekly Stats -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold mb-4">Weekly Statistics</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold mb-4 dark:text-white">Weekly Statistics</h3>
           <div class="space-y-4">
-            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-              <span class="text-gray-700">Total Attendance</span>
+            <div class="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <span class="text-gray-700 dark:text-gray-300">Total Attendance</span>
               <span class="text-xl font-bold text-blue-600">{{ weeklyStats?.totalAttendance || 0 }}</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-              <span class="text-gray-700">Average Daily</span>
+            <div class="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <span class="text-gray-700 dark:text-gray-300">Average Daily</span>
               <span class="text-xl font-bold text-green-600">{{ calculateWeeklyAverage() }}</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-              <span class="text-gray-700">Peak Day</span>
+            <div class="flex justify-between items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <span class="text-gray-700 dark:text-gray-300">Peak Day</span>
               <span class="text-xl font-bold text-purple-600">{{ getPeakDay() }}</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
-              <span class="text-gray-700">Date Range</span>
+            <div class="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <span class="text-gray-700 dark:text-gray-300">Date Range</span>
               <span class="text-sm font-medium text-orange-600">
                 {{ formatDate(weeklyStats?.weekStart) }} - {{ formatDate(weeklyStats?.weekEnd) }}
               </span>
@@ -64,36 +64,36 @@
     <!-- Monthly Report -->
     <div v-if="selectedReportType === 'monthly'">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600 mb-1">Total Attendance</p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Attendance</p>
           <p class="text-3xl font-bold text-indigo-600">{{ monthlyStats?.totalAttendance || 0 }}</p>
           <p class="text-sm text-gray-500 mt-2">{{ monthlyStats?.month }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600 mb-1">Unique Students</p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Unique Students</p>
           <p class="text-3xl font-bold text-green-600">{{ monthlyStats?.uniqueAttendees || 0 }}</p>
           <p class="text-sm text-gray-500 mt-2">of {{ monthlyStats?.totalStudents || 0 }} total</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600 mb-1">Participation Rate</p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Participation Rate</p>
           <p class="text-3xl font-bold text-purple-600">{{ monthlyStats?.participationRate || 0 }}%</p>
           <p class="text-sm text-gray-500 mt-2">Overall engagement</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-4">Monthly Attendance Pattern</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold mb-4 dark:text-white">Monthly Attendance Pattern</h3>
         <Bar v-if="monthlyChartData" :data="monthlyChartData" :options="barChartOptions" />
       </div>
     </div>
 
     <!-- Department Report -->
     <div v-if="selectedReportType === 'department'">
-      <div class="bg-white rounded-lg shadow p-4 mb-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
         <select
           v-model="selectedDepartment"
           @change="loadDepartmentStats"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         >
           <option value="">Select Department</option>
           <option value="Computer Engineering">Computer Engineering</option>
@@ -103,25 +103,25 @@
       </div>
 
       <div v-if="departmentStats" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Total Students</h3>
+            <h3 class="text-lg font-semibold dark:text-white">Total Students</h3>
             <UsersIcon class="w-8 h-8 text-indigo-600" />
           </div>
           <p class="text-4xl font-bold text-indigo-600">{{ departmentStats.totalStudents }}</p>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Today's Attendance</h3>
+            <h3 class="text-lg font-semibold dark:text-white">Today's Attendance</h3>
             <ClipboardDocumentCheckIcon class="w-8 h-8 text-green-600" />
           </div>
           <p class="text-4xl font-bold text-green-600">{{ departmentStats.todayAttendance }}</p>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Attendance Rate</h3>
+            <h3 class="text-lg font-semibold dark:text-white">Attendance Rate</h3>
             <ChartBarIcon class="w-8 h-8 text-purple-600" />
           </div>
           <p class="text-4xl font-bold text-purple-600">{{ departmentStats.attendanceRate }}%</p>
@@ -131,13 +131,13 @@
 
     <!-- Student Performance -->
     <div v-if="selectedReportType === 'student'">
-      <div class="bg-white rounded-lg shadow p-4 mb-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
         <div class="flex gap-4">
           <input
             v-model="studentSearchQuery"
             type="text"
             placeholder="Search student by name or number..."
-            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
           />
           <button
             @click="searchStudent"
@@ -150,42 +150,42 @@
 
       <div v-if="studentStats" class="space-y-6">
         <!-- Student Info -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center">
-            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-2xl font-semibold">
+            <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-2xl font-semibold">
               {{ studentStats.student.name.split(' ').map(n => n[0]).join('') }}
             </div>
             <div class="ml-4">
-              <h3 class="text-xl font-bold text-gray-900">{{ studentStats.student.name }}</h3>
-              <p class="text-gray-600">{{ studentStats.student.studentNumber }} • {{ studentStats.student.department }}</p>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ studentStats.student.name }}</h3>
+              <p class="text-gray-600 dark:text-gray-400">{{ studentStats.student.studentNumber }} • {{ studentStats.student.department }}</p>
             </div>
           </div>
         </div>
 
         <!-- Student Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-sm text-gray-600">Total Attendance</p>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Total Attendance</p>
             <p class="text-2xl font-bold text-indigo-600">{{ studentStats.totalAttendance }}</p>
           </div>
-          <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-sm text-gray-600">This Month</p>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">This Month</p>
             <p class="text-2xl font-bold text-green-600">{{ studentStats.monthlyAttendance }}</p>
           </div>
-          <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-sm text-gray-600">Present Count</p>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Present Count</p>
             <p class="text-2xl font-bold text-blue-600">{{ studentStats.presentCount }}</p>
           </div>
           <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Late Count</p>
             <p class="text-2xl font-bold text-orange-600">{{ studentStats.lateCount }}</p>
           </div>
-          <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-sm text-gray-600">Attendance Rate</p>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Attendance Rate</p>
             <p class="text-2xl font-bold text-purple-600">{{ studentStats.attendanceRate }}%</p>
           </div>
-          <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-sm text-gray-600">Avg Duration</p>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Avg Duration</p>
             <p class="text-2xl font-bold text-teal-600">{{ studentStats.averageDurationMinutes }}m</p>
           </div>
         </div>

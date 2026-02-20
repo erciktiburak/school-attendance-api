@@ -1,15 +1,15 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600">
+  <div class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-900 dark:to-purple-900">
     <!-- Top Navigation -->
-    <nav class="bg-white shadow-lg">
+    <nav class="bg-white dark:bg-gray-800 shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-indigo-600">Student Portal</h1>
+            <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Student Portal</h1>
           </div>
           <router-link
             to="/admin"
-            class="text-sm text-gray-600 hover:text-indigo-600"
+            class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Admin Panel →
           </router-link>
@@ -23,15 +23,15 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t">
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t dark:border-gray-700">
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-around py-3">
           <router-link
             v-for="item in menuItems"
             :key="item.path"
             :to="item.path"
-            class="flex flex-col items-center px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors"
-            active-class="text-indigo-600"
+            class="flex flex-col items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            active-class="text-indigo-600 dark:text-indigo-400"
           >
             <component :is="item.icon" class="w-6 h-6 mb-1" />
             <span class="text-xs font-medium">{{ item.name }}</span>

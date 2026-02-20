@@ -5,12 +5,12 @@
         <div
           v-for="stat in stats"
           :key="stat.label"
-          class="bg-white rounded-lg shadow p-6"
+          class="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
         >
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-gray-600 mb-1">{{ stat.label }}</p>
-              <p class="text-3xl font-bold text-gray-900">{{ stat.value }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">{{ stat.label }}</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
               <p class="text-sm mt-2" :class="stat.changeColor">
                 {{ stat.change }}
               </p>
@@ -25,52 +25,52 @@
       <!-- Charts Row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Weekly Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold mb-4">Weekly Attendance</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold mb-4 dark:text-white">Weekly Attendance</h3>
           <Bar v-if="weeklyChartData" :data="weeklyChartData" :options="chartOptions" />
         </div>
   
         <!-- Status Pie Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold mb-4">Today's Status</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold mb-4 dark:text-white">Today's Status</h3>
           <Doughnut v-if="statusChartData" :data="statusChartData" :options="pieChartOptions" />
         </div>
       </div>
   
       <!-- Recent Activity -->
-      <div class="bg-white rounded-lg shadow">
-        <div class="p-6 border-b">
-          <h3 class="text-lg font-semibold">Recent Check-ins</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="p-6 border-b dark:border-gray-700">
+          <h3 class="text-lg font-semibold dark:text-white">Recent Check-ins</h3>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-gray-50">
+            <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Student</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Location</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr v-for="record in recentActivity" :key="record.id" class="hover:bg-gray-50">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              <tr v-for="record in recentActivity" :key="record.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold">
+                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold">
                       {{ record.student?.firstName?.charAt(0) }}{{ record.student?.lastName?.charAt(0) }}
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">
+                      <div class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ record.student?.firstName }} {{ record.student?.lastName }}
                       </div>
-                      <div class="text-sm text-gray-500">{{ record.student?.studentNumber }}</div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">{{ record.student?.studentNumber }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                   {{ formatTime(record.checkInTime) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {{ record.location }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -235,12 +235,12 @@
   
   function getStatusClass(status) {
     const classes = {
-      Present: 'bg-green-100 text-green-800',
-      Late: 'bg-orange-100 text-orange-800',
-      Absent: 'bg-red-100 text-red-800',
-      Excused: 'bg-purple-100 text-purple-800',
+      Present: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
+      Late: 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400',
+      Absent: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400',
+      Excused: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400',
     };
-    return classes[status] || 'bg-gray-100 text-gray-800';
+    return classes[status] || 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
   }
   
   async function loadData() {

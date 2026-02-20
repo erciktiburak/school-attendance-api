@@ -1,28 +1,28 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="bg-white rounded-2xl shadow-xl p-6 text-center">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">QR Code Scanner</h2>
-      <p class="text-gray-600">Scan your QR code to check-in or check-out</p>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">QR Code Scanner</h2>
+      <p class="text-gray-600 dark:text-gray-400">Scan your QR code to check-in or check-out</p>
     </div>
 
     <!-- Manual Input Option -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Enter Student Number</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Enter Student Number</h3>
       
       <div class="space-y-4">
         <input
           v-model="studentNumber"
           type="text"
           placeholder="Enter your student number..."
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center text-lg"
+          class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center text-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
         />
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
           <select
             v-model="location"
-            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value="Computer Lab">Computer Lab</option>
             <option value="Library">Library</option>
@@ -56,14 +56,14 @@
 
     <!-- OR Divider -->
     <div class="flex items-center">
-      <div class="flex-1 border-t-2 border-gray-300"></div>
-      <span class="px-4 text-gray-500 font-medium">OR</span>
-      <div class="flex-1 border-t-2 border-gray-300"></div>
+      <div class="flex-1 border-t-2 border-gray-300 dark:border-gray-600"></div>
+      <span class="px-4 text-gray-500 dark:text-gray-400 font-medium">OR</span>
+      <div class="flex-1 border-t-2 border-gray-300 dark:border-gray-600"></div>
     </div>
 
     <!-- Camera Scanner (Simulated) -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center">Use Camera</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">Use Camera</h3>
       
       <div class="aspect-square bg-gray-900 rounded-xl flex items-center justify-center mb-4 relative overflow-hidden">
         <div class="absolute inset-0 flex items-center justify-center">
@@ -75,7 +75,7 @@
         </div>
       </div>
       
-      <p class="text-center text-sm text-gray-500">
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400">
         Camera scanning is simulated in this demo. Use manual input above.
       </p>
     </div>
@@ -85,26 +85,26 @@
       v-if="statusMessage"
       :class="[
         'rounded-xl p-4 text-center font-medium',
-        statusType === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        statusType === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400'
       ]"
     >
       {{ statusMessage }}
     </div>
 
     <!-- Recent Activity -->
-    <div v-if="recentActivity" class="bg-white rounded-2xl shadow-xl p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Last Activity</h3>
+    <div v-if="recentActivity" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Last Activity</h3>
       <div class="space-y-3">
-        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-          <span class="text-gray-700">Time</span>
-          <span class="font-semibold">{{ formatTime(recentActivity.checkInTime) }}</span>
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <span class="text-gray-700 dark:text-gray-300">Time</span>
+          <span class="font-semibold dark:text-white">{{ formatTime(recentActivity.checkInTime) }}</span>
         </div>
-        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-          <span class="text-gray-700">Location</span>
-          <span class="font-semibold">{{ recentActivity.location }}</span>
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <span class="text-gray-700 dark:text-gray-300">Location</span>
+          <span class="font-semibold dark:text-white">{{ recentActivity.location }}</span>
         </div>
-        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-          <span class="text-gray-700">Status</span>
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <span class="text-gray-700 dark:text-gray-300">Status</span>
           <span :class="getStatusClass(recentActivity.status)" class="px-3 py-1 rounded-full text-sm font-semibold">
             {{ recentActivity.status }}
           </span>
