@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using SchoolAttendance.API.Data;
-using System.Text.Json.Serialization; 
+using System.Text.Json.Serialization;
 using SchoolAttendance.API.Services;
+
+// EPPlus 8+ license (noncommercial)
+ExcelPackage.License.SetNonCommercialOrganization("SchoolAttendanceAPI");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // QR Code Service Configuration
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
 
 // CORS
 builder.Services.AddCors(options =>

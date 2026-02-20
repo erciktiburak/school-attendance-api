@@ -1,3 +1,4 @@
+#pragma warning disable CA1416 // System.Drawing/QRCode work cross-platform via libgdiplus
 using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
