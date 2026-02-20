@@ -1,89 +1,326 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800">Students</h2>
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Students</h2>
+        <p class="text-gray-600">Manage student records and QR codes</p>
+      </div>
       <button
-        @click="showAddModal = true"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        @click="openCreateModal"
+        class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
       >
+        <PlusIcon class="w-5 h-5 mr-2" />
         Add Student
       </button>
     </div>
 
+    <!-- Search & Filter -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search by name, student number, or email..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+        <select
+          v-model="filterDepartment"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        >
+          <option value="">All Departments</option>
+          <option value="Computer Engineering">Computer Engineering</option>
+          <option value="Electrical Engineering">Electrical Engineering</option>
+          <option value="Mechanical Engineering">Mechanical Engineering</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Students Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
       <table class="w-full">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student Number</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">QR Code</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="student in students" :key="student.id" class="hover:bg-gray-50">
-            <td class="px-6 py-4">
+          <tr v-for="student in filteredStudents" :key="student.id" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold">
-                  {{ student.firstName?.charAt(0) }}{{ student.lastName?.charAt(0) }}
+                  {{ student.firstName.charAt(0) }}{{ student.lastName.charAt(0) }}
                 </div>
                 <div class="ml-4">
-                  <div class="font-medium text-gray-900">{{ student.firstName }} {{ student.lastName }}</div>
-                  <div class="text-sm text-gray-500">{{ student.studentNumber }}</div>
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ student.firstName }} {{ student.lastName }}
+                  </div>
+                  <div class="text-sm text-gray-500">{{ student.email }}</div>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ student.department }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">{{ student.email }}</td>
-            <td class="px-6 py-4">
-              <div class="flex gap-2">
-                <a :href="api.getStudentQRCode(student.id)" target="_blank" class="text-indigo-600 hover:text-indigo-800">QR</a>
-                <button @click="editStudent(student)" class="text-blue-600 hover:text-blue-800">Edit</button>
-                <button @click="deleteStudent(student)" class="text-red-600 hover:text-red-800">Delete</button>
-              </div>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ student.studentNumber }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ student.department }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                @click="showQRCode(student)"
+                class="text-indigo-600 hover:text-indigo-900 flex items-center"
+              >
+                <QrCodeIcon class="w-5 h-5 mr-1" />
+                View QR
+              </button>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button
+                @click="editStudent(student)"
+                class="text-indigo-600 hover:text-indigo-900 mr-4"
+              >
+                Edit
+              </button>
+              <button
+                @click="deleteStudent(student)"
+                class="text-red-600 hover:text-red-900"
+              >
+                Delete
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
-      <div v-if="loading" class="p-8 text-center text-gray-500">Loading...</div>
-      <div v-else-if="!students.length" class="p-8 text-center text-gray-500">No students found.</div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">{{ editMode ? 'Edit Student' : 'Add New Student' }}</h3>
+        
+        <form @submit.prevent="saveStudent">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <input
+                v-model="formData.firstName"
+                type="text"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+              <input
+                v-model="formData.lastName"
+                type="text"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Student Number</label>
+              <input
+                v-model="formData.studentNumber"
+                type="text"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                v-model="formData.email"
+                type="email"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+              <select
+                v-model="formData.department"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="Computer Engineering">Computer Engineering</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              type="button"
+              @click="closeModal"
+              class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              {{ editMode ? 'Update' : 'Create' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div v-if="showQRModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 max-w-sm w-full text-center">
+        <h3 class="text-xl font-bold mb-4">{{ selectedStudent?.firstName }} {{ selectedStudent?.lastName }}</h3>
+        <p class="text-sm text-gray-600 mb-4">{{ selectedStudent?.studentNumber }}</p>
+        
+        <div class="bg-gray-100 p-4 rounded-lg mb-4">
+          <img
+            :src="api.getStudentQRCode(selectedStudent.id)"
+            :alt="`QR Code for ${selectedStudent.firstName}`"
+            class="mx-auto"
+          />
+        </div>
+        
+        <p class="text-xs text-gray-500 mb-4">Scan this QR code for check-in/check-out</p>
+        
+        <button
+          @click="downloadQRCode"
+          class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 mb-2"
+        >
+          Download QR Code
+        </button>
+        
+        <button
+          @click="closeQRModal"
+          class="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { PlusIcon, QrCodeIcon } from '@heroicons/vue/24/outline';
 import api from '../../services/api';
 
 const students = ref([]);
-const loading = ref(true);
-const showAddModal = ref(false);
+const searchQuery = ref('');
+const filterDepartment = ref('');
+const showModal = ref(false);
+const showQRModal = ref(false);
+const editMode = ref(false);
+const selectedStudent = ref(null);
+const formData = ref({
+  firstName: '',
+  lastName: '',
+  studentNumber: '',
+  email: '',
+  department: 'Computer Engineering',
+});
+
+const filteredStudents = computed(() => {
+  return students.value.filter(student => {
+    const matchesSearch = 
+      student.firstName.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      student.lastName.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      student.studentNumber.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchQuery.value.toLowerCase());
+    
+    const matchesDepartment = 
+      !filterDepartment.value || student.department === filterDepartment.value;
+    
+    return matchesSearch && matchesDepartment;
+  });
+});
 
 async function loadStudents() {
   try {
-    loading.value = true;
-    const res = await api.getStudents();
-    students.value = res.data;
+    const response = await api.getStudents();
+    students.value = response.data;
   } catch (error) {
     console.error('Error loading students:', error);
-  } finally {
-    loading.value = false;
   }
+}
+
+function openCreateModal() {
+  editMode.value = false;
+  formData.value = {
+    firstName: '',
+    lastName: '',
+    studentNumber: '',
+    email: '',
+    department: 'Computer Engineering',
+  };
+  showModal.value = true;
 }
 
 function editStudent(student) {
-  // TODO: Implement edit modal
-  console.log('Edit', student);
+  editMode.value = true;
+  formData.value = { ...student };
+  showModal.value = true;
+}
+
+function closeModal() {
+  showModal.value = false;
+}
+
+async function saveStudent() {
+  try {
+    if (editMode.value) {
+      await api.updateStudent(formData.value.id, formData.value);
+    } else {
+      await api.createStudent(formData.value);
+    }
+    closeModal();
+    loadStudents();
+  } catch (error) {
+    console.error('Error saving student:', error);
+    alert('Error saving student. Please try again.');
+  }
 }
 
 async function deleteStudent(student) {
-  if (!confirm(`Delete ${student.firstName} ${student.lastName}?`)) return;
-  try {
-    await api.deleteStudent(student.id);
-    await loadStudents();
-  } catch (error) {
-    console.error('Error deleting student:', error);
+  if (confirm(`Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
+    try {
+      await api.deleteStudent(student.id);
+      loadStudents();
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      alert('Error deleting student. Please try again.');
+    }
   }
+}
+
+function showQRCode(student) {
+  selectedStudent.value = student;
+  showQRModal.value = true;
+}
+
+function closeQRModal() {
+  showQRModal.value = false;
+  selectedStudent.value = null;
+}
+
+function downloadQRCode() {
+  const link = document.createElement('a');
+  link.href = api.getStudentQRCode(selectedStudent.value.id);
+  link.download = `${selectedStudent.value.studentNumber}_qrcode.png`;
+  link.click();
 }
 
 onMounted(() => {
