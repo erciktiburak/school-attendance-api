@@ -39,6 +39,28 @@ const routes = [
     ],
   },
   {
+    path: '/teacher',
+    component: () => import('../views/teacher/Layout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'TeacherDashboard',
+        component: () => import('../views/teacher/Dashboard.vue'),
+      },
+      {
+        path: 'at-risk',
+        name: 'AtRiskStudents',
+        component: () => import('../views/teacher/AtRiskStudents.vue'),
+      },
+      {
+        path: 'daily-report',
+        name: 'DailyReport',
+        component: () => import('../views/teacher/DailyReport.vue'),
+      },
+    ],
+  },
+  {
     path: '/student',
     component: () => import('../views/student/Layout.vue'),
     meta: { requiresAuth: true },
@@ -68,12 +90,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login');
   } else if (to.path === '/login' && isAuthenticated.value) {
-    next('/admin');
+    if (user.value?.role === 'Teacher') {
+      next('/teacher');
+    } else {
+      next('/admin');
+    }
   } else {
     next();
   }

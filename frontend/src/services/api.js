@@ -83,6 +83,20 @@ export default {
     return api.get(`/statistics/department/${department}`);
   },
 
+  // Teacher
+  getTeacherDashboard() {
+    return api.get('/teacher/dashboard');
+  },
+  getTeacherAtRiskStudents() {
+    return api.get('/teacher/students/at-risk');
+  },
+  markStudentAbsent(studentId, isExcused) {
+    return api.post('/teacher/mark-absent', { studentId, isExcused });
+  },
+  getTeacherDailySummary(date) {
+    return api.get('/teacher/daily-summary', { params: date ? { date } : {} });
+  },
+
   // Excel Export
   getAttendanceExcelUrl(date) {
     return `${API_BASE_URL}/export/attendance?date=${date}`;
