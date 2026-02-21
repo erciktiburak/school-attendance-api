@@ -7,12 +7,21 @@
           <div class="flex items-center">
             <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Student Portal</h1>
           </div>
-          <router-link
-            to="/admin"
-            class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-          >
-            Admin Panel →
-          </router-link>
+          <div class="flex items-center gap-4">
+            <button
+              @click="toggleDarkMode"
+              class="flex items-center px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <component :is="isDark ? SunIcon : MoonIcon" class="w-5 h-5 mr-1" />
+              {{ isDark ? 'Light' : 'Dark' }}
+            </button>
+            <router-link
+              to="/admin"
+              class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+            >
+              Admin Panel →
+            </router-link>
+          </div>
         </div>
       </div>
     </nav>
@@ -46,7 +55,10 @@
 </template>
 
 <script setup>
-import { HomeIcon, QrCodeIcon, ClockIcon } from '@heroicons/vue/24/outline';
+import { HomeIcon, QrCodeIcon, ClockIcon, MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
+import { useDarkMode } from '../../composables/useDarkMode';
+
+const { isDark, toggle: toggleDarkMode } = useDarkMode();
 
 const menuItems = [
   { name: 'Home', path: '/student', icon: HomeIcon },
