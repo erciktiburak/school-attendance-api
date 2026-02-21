@@ -13,6 +13,9 @@ public class AppDbContext : DbContext
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Course> Courses { get; set; }
+    public DbSet<CourseEnrollment> CourseEnrollments { get; set; }
+    public DbSet<CourseAttendance> CourseAttendances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,6 +63,47 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
         });
 
+        // Course configuration
+        modelBuilder.Entity<Course>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.CourseCode).IsUnique();
+            entity.Property(e => e.CourseCode).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.CourseName).IsRequired().HasMaxLength(200);
+            entity.HasOne(e => e.Teacher)
+                  .WithMany()
+                  .HasForeignKey(e => e.TeacherId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<CourseEnrollment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Course)
+                  .WithMany(c => c.Enrollments)
+                  .HasForeignKey(e => e.CourseId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Student)
+                  .WithMany()
+                  .HasForeignKey(e => e.StudentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.CourseId, e.StudentId }).IsUnique();
+        });
+
+        modelBuilder.Entity<CourseAttendance>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Course)
+                  .WithMany(c => c.CourseAttendances)
+                  .HasForeignKey(e => e.CourseId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Student)
+                  .WithMany()
+                  .HasForeignKey(e => e.StudentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.CourseId, e.StudentId, e.Date });
+        });
+
         // Seed data
         modelBuilder.Entity<Student>().HasData(
             new Student
@@ -95,6 +139,33 @@ public class AppDbContext : DbContext
                 LastName = "Kaya",
                 Email = "mehmet.kaya@emu.edu.tr",
                 Department = "Computer Engineering",
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
+        modelBuilder.Entity<Course>().HasData(
+            new Course
+            {
+                Id = 1,
+                CourseCode = "BLGM223",
+                CourseName = "Digital Logic Design",
+                Department = "Computer Engineering",
+                Credits = 4,
+                Schedule = "Mon/Wed 9:00-10:30",
+                Location = "Room 301",
+                TeacherId = 1,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Course
+            {
+                Id = 2,
+                CourseCode = "ITEC562",
+                CourseName = "Natural Language Processing",
+                Department = "Computer Engineering",
+                Credits = 3,
+                Schedule = "Tue/Thu 14:00-15:30",
+                Location = "Lab 205",
+                TeacherId = 1,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
