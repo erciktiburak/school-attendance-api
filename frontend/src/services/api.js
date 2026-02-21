@@ -104,4 +104,33 @@ export default {
   getStudentsExcelUrl() {
     return `${API_BASE_URL}/export/students`;
   },
+
+  // Courses
+  getCourses() {
+    return api.get('/course');
+  },
+  getCourse(id) {
+    return api.get(`/course/${id}`);
+  },
+  createCourse(course) {
+    return api.post('/course', course);
+  },
+  updateCourse(id, course) {
+    return api.put(`/course/${id}`, course);
+  },
+  deleteCourse(id) {
+    return api.delete(`/course/${id}`);
+  },
+  enrollStudent(courseId, studentId) {
+    return api.post(`/course/${courseId}/enroll`, { studentId });
+  },
+  unenrollStudent(courseId, studentId) {
+    return api.delete(`/course/${courseId}/enroll/${studentId}`);
+  },
+  markCourseAttendance(courseId, studentId, status, notes = '') {
+    return api.post(`/course/${courseId}/attendance`, { studentId, status, notes });
+  },
+  getCourseAttendance(courseId, date) {
+    return api.get(`/course/${courseId}/attendance`, { params: date ? { date } : {} });
+  },
 };

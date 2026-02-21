@@ -80,6 +80,7 @@ import {
   UsersIcon,
   ClipboardDocumentListIcon,
   ChartBarIcon,
+  AcademicCapIcon,
   MoonIcon,
   SunIcon,
 } from '@heroicons/vue/24/outline';
@@ -95,6 +96,7 @@ const menuItems = [
   { name: 'Students', path: '/admin/students', icon: UsersIcon },
   { name: 'Attendance', path: '/admin/attendance', icon: ClipboardDocumentListIcon },
   { name: 'Reports', path: '/admin/reports', icon: ChartBarIcon },
+  { name: 'Courses', path: '/admin/courses', icon: AcademicCapIcon },
 ];
 
 const currentPageTitle = computed(() => {
