@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuth } from '../composables/useAuth';
 
 const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+  },
   {
     path: '/',
     redirect: '/admin',
@@ -8,6 +14,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../views/admin/Layout.vue'),
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -34,6 +41,7 @@ const routes = [
   {
     path: '/student',
     component: () => import('../views/student/Layout.vue'),
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -57,6 +65,18 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const { isAuthenticated } = useAuth();
+
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
+    next('/login');
+  } else if (to.path === '/login' && isAuthenticated.value) {
+    next('/admin');
+  } else {
+    next();
+  }
 });
 
 export default router;

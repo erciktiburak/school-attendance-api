@@ -50,8 +50,15 @@
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{ currentPageTitle }}</h2>
           <div class="flex items-center space-x-4">
             <span class="text-sm text-gray-600 dark:text-gray-400">{{ currentDate }}</span>
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ user?.username || 'Guest' }}</span>
+            <button
+              @click="handleLogout"
+              class="text-sm text-red-600 dark:text-red-400 hover:underline"
+            >
+              Logout
+            </button>
             <div class="w-10 h-10 bg-indigo-600 dark:bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-              A
+              {{ user?.username?.charAt(0).toUpperCase() || 'A' }}
             </div>
           </div>
         </div>
@@ -77,9 +84,11 @@ import {
   SunIcon,
 } from '@heroicons/vue/24/outline';
 import { useDarkMode } from '../../composables/useDarkMode';
+import { useAuth } from '../../composables/useAuth';
 
 const route = useRoute();
 const { isDark, toggle: toggleDarkMode } = useDarkMode();
+const { user, logout } = useAuth();
 
 const menuItems = [
   { name: 'Dashboard', path: '/admin', icon: HomeIcon },
@@ -100,4 +109,8 @@ const currentDate = computed(() => {
     day: 'numeric',
   });
 });
+
+function handleLogout() {
+  logout();
+}
 </script>

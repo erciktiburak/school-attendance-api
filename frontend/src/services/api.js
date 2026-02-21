@@ -9,7 +9,23 @@ const api = axios.create({
   },
 });
 
+export function setAuthToken(token) {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+}
+
 export default {
+  // Auth
+  login(credentials) {
+    return api.post('/auth/login', credentials);
+  },
+  register(data) {
+    return api.post('/auth/register', data);
+  },
+
   // Students
   getStudents() {
     return api.get('/student');
