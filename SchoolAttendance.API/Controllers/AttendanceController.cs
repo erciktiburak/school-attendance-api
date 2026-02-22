@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance.API.Data;
+using SchoolAttendance.API.Hubs;
 using SchoolAttendance.API.Models;
 
 namespace SchoolAttendance.API.Controllers;
@@ -10,10 +12,12 @@ namespace SchoolAttendance.API.Controllers;
 public class AttendanceController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IHubContext<AttendanceHub> _hubContext;
 
-    public AttendanceController(AppDbContext context)
+    public AttendanceController(AppDbContext context, IHubContext<AttendanceHub> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
     }
 
     // POST: api/attendance/checkin
@@ -57,6 +61,15 @@ public class AttendanceController : ControllerBase
         // Load student info for response
         await _context.Entry(attendance).Reference(a => a.Student).LoadAsync();
 
+        await _hubContext.Clients.All.SendAsync("StudentCheckedIn", new
+        {
+            studentName = $"{student.FirstName} {student.LastName}",
+            studentNumber = student.StudentNumber,
+            checkInTime = attendance.CheckInTime,
+            location = attendance.Location,
+            status = attendance.Status.ToString()
+        });
+
         return Ok(new
         {
             message = "Check-in successful",
@@ -96,6 +109,14 @@ public class AttendanceController : ControllerBase
         await _context.SaveChangesAsync();
 
         var duration = (attendance.CheckOutTime.Value - attendance.CheckInTime).TotalMinutes;
+
+        await _hubContext.Clients.All.SendAsync("StudentCheckedOut", new
+        {
+            studentName = $"{student.FirstName} {student.LastName}",
+            studentNumber = student.StudentNumber,
+            checkOutTime = attendance.CheckOutTime,
+            durationMinutes = Math.Round(duration, 2)
+        });
 
         return Ok(new
         {

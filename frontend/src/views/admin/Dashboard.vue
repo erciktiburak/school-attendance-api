@@ -1,5 +1,14 @@
 <template>
     <div>
+      <!-- SignalR Status -->
+      <div
+        v-if="isConnected"
+        class="mb-4 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg flex items-center"
+      >
+        <div class="w-2 h-2 bg-green-600 rounded-full mr-2 animate-pulse"></div>
+        <span class="text-sm">Live updates active</span>
+      </div>
+
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div
@@ -87,7 +96,7 @@
   </template>
   
   <script setup>
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, onMounted, computed, watch } from 'vue';
   import { Bar, Doughnut } from 'vue-chartjs';
   import {
     Chart as ChartJS,
@@ -106,15 +115,22 @@
     ChartBarIcon,
   } from '@heroicons/vue/24/outline';
   import api from '../../services/api';
-  
+  import { useSignalR } from '../../composables/useSignalR';
+
   // Register ChartJS components
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
-  
+
+  const { isConnected, notifications } = useSignalR();
+
   const dashboardStats = ref(null);
   const weeklyStats = ref(null);
   const recentActivity = ref([]);
   const loading = ref(true);
-  
+
+  watch(notifications, () => {
+    if (notifications.value.length > 0) loadData();
+  }, { deep: true });
+
   const stats = computed(() => {
     if (!dashboardStats.value) return [];
     

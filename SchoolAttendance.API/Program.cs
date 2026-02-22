@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SchoolAttendance.API.Data;
+using SchoolAttendance.API.Hubs;
 using SchoolAttendance.API.Models;
 using SchoolAttendance.API.Services;
 using System.Text;
@@ -53,14 +54,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// CORS
+builder.Services.AddSignalR();
+
+// CORS (SignalR needs AllowCredentials; use specific origins)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -78,6 +82,7 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<AttendanceHub>("/attendanceHub");
 
 // Auto-migrate database and seed users
 using (var scope = app.Services.CreateScope())

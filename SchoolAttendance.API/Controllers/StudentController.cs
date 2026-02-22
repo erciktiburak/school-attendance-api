@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance.API.Data;
+using SchoolAttendance.API.Hubs;
 using SchoolAttendance.API.Models;
 using SchoolAttendance.API.Services;
 
@@ -11,10 +13,12 @@ namespace SchoolAttendance.API.Controllers;
 public class StudentController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IHubContext<AttendanceHub> _hubContext;
 
-    public StudentController(AppDbContext context)
+    public StudentController(AppDbContext context, IHubContext<AttendanceHub> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
     }
 
     // GET: api/student
@@ -72,6 +76,14 @@ public class StudentController : ControllerBase
 
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
+
+        await _hubContext.Clients.All.SendAsync("NewStudentAdded", new
+        {
+            id = student.Id,
+            name = $"{student.FirstName} {student.LastName}",
+            studentNumber = student.StudentNumber,
+            department = student.Department
+        });
 
         return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, student);
     }

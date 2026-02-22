@@ -69,12 +69,16 @@
         <router-view />
       </main>
     </div>
+
+    <NotificationToast />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
+import NotificationToast from '../../components/NotificationToast.vue';
+import { useSignalR } from '../../composables/useSignalR';
 import {
   HomeIcon,
   UsersIcon,
@@ -90,6 +94,10 @@ import { useAuth } from '../../composables/useAuth';
 const route = useRoute();
 const { isDark, toggle: toggleDarkMode } = useDarkMode();
 const { user, logout } = useAuth();
+const { connect, disconnect } = useSignalR();
+
+onMounted(() => connect());
+onUnmounted(() => disconnect());
 
 const menuItems = [
   { name: 'Dashboard', path: '/admin', icon: HomeIcon },
