@@ -105,6 +105,7 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Duration</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Location</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -139,6 +140,16 @@
                 {{ record.status }}
               </span>
             </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                v-if="record.status === 'Late' && record.student?.id"
+                @click="sendLateEmail(record.student.id)"
+                class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm"
+              >
+                📧 Send Alert
+              </button>
+              <span v-else class="text-gray-400 dark:text-gray-500 text-sm">—</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -149,11 +160,17 @@
       </div>
     </div>
 
-    <!-- Export Buttons -->
-    <div class="mt-6 flex gap-4 justify-end">
+    <!-- Export & Email Buttons -->
+    <div class="mt-6 flex gap-4 justify-end flex-wrap">
+      <button
+        @click="sendBulkEmails"
+        class="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors"
+      >
+        📧 Email All Absent
+      </button>
       <button
         @click="exportToCSV"
-        class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 transition-colors"
       >
         <ArrowDownTrayIcon class="w-5 h-5 mr-2" />
         Export to CSV
@@ -275,6 +292,28 @@ function exportToCSV() {
   link.download = `attendance_${selectedDate.value}.csv`;
   link.click();
   window.URL.revokeObjectURL(url);
+}
+
+async function sendLateEmail(studentId) {
+  if (!confirm('Send late notification email to student?')) return;
+  try {
+    await api.sendLateNotification(studentId);
+    alert('Email sent successfully!');
+  } catch (error) {
+    console.error('Error sending email:', error);
+    alert(error.response?.data?.message || 'Failed to send email');
+  }
+}
+
+async function sendBulkEmails() {
+  if (!confirm(`Send absence notifications to all absent students for ${selectedDate.value}?`)) return;
+  try {
+    const response = await api.sendBulkAbsentNotifications(selectedDate.value);
+    alert(response.data.message);
+  } catch (error) {
+    console.error('Error sending bulk emails:', error);
+    alert(error.response?.data?.message || 'Failed to send emails');
+  }
 }
 
 onMounted(() => {

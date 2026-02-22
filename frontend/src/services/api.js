@@ -133,4 +133,18 @@ export default {
   getCourseAttendance(courseId, date) {
     return api.get(`/course/${courseId}/attendance`, { params: date ? { date } : {} });
   },
+
+  // Email
+  sendAbsentNotification(studentId, date) {
+    return api.post('/email/send-absent-notification', { studentId, date });
+  },
+  sendLateNotification(studentId) {
+    return api.post('/email/send-late-notification', studentId);
+  },
+  sendWeeklyReport(studentId) {
+    return api.post('/email/send-weekly-report', studentId);
+  },
+  sendBulkAbsentNotifications(date) {
+    return api.post('/email/send-bulk-absent', date);
+  },
 };
