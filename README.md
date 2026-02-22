@@ -8,7 +8,7 @@ A comprehensive school attendance management system with QR code functionality, 
 
 ## Features
 
-### 🔐 Admin Panel
+### Admin Panel
 - **Real-time Dashboard** - Live statistics with interactive charts
 - **Student Management** - Full CRUD operations with QR code generation
 - **Attendance Logs** - Comprehensive attendance tracking with filters
